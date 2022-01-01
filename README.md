@@ -1,4 +1,4 @@
-```
+``` python
 # Trying to make a game like Sabrina did in this video!
 # https://www.youtube.com/watch?v=xvOkXXprG2g
 
