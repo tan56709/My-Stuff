@@ -22,66 +22,81 @@ previous game has been ended and enter 'math_game()'.\n"
 end = 'end'
 num = '-.0123456789'
 
-def math_game() -> List[list]:
-    """ Use prompt to ask the user for a response to a mental math question 
-    and continue asking until the user ends the program. Return a history of 
-    the questions and reponses. """
+def math_game() -> None:
+    """ Use prompt to ask the user for a response to a mental math question
+    and continue asking until the user ends the program. Return a history of
+    the questions and responses. """
     my_ans = ''
     list_of_qs = []
     q_num = 1
+    correctness = ''
     operation = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/':
                  operator.truediv}
     op_list = list(operation)
+    num_correct = 0
+
     while my_ans != end:
-        op = random.choice(op_list)
-        if op == '+' or op == '-':
-            MIN_R, MAX_R = -20, 21 
-        elif op == '*':
-            MIN_R, MAX_R = -10, 21 
-        elif op == '/':
-            MIN_R, MAX_R = 1, 21
-            
-        a, b = random.randrange(MIN_R, MAX_R), random.randrange(MIN_R, MAX_R)
-        
-        question = f"{a} {op} {b}"
-        
+        if correctness == "Input Error":
+            q_num -= 1
+            my_ans = input(f"Q{q_num}: {a} {op} {b} = ")
+            # ## ask the same question again
+
+        else:
+            op = random.choice(op_list)
+            if op == '+' or op == '-':
+                min_r, max_r = -20, 21
+            elif op == '*':
+                min_r, max_r = -10, 21
+            else:
+                min_r, max_r = 1, 21
+
+            a, b = random.randrange(min_r, max_r), random.randrange(min_r, max_r)
+
+            question = f"{a} {op} {b}"
+
+            my_ans = input(f"Q{q_num}: {a} {op} {b} = ")
+
         ans = operation[op](a, b)
         if type(ans) == float:
             if ans.is_integer():
                 ans = int(ans)
-                
-        my_ans = input(f"Q{q_num}: {a} {op} {b} = ")
-        
-        non_numeric = False 
+
+        non_numeric = False
         for char in my_ans:
             if char not in num:
                 non_numeric = True
-                          
+
         if non_numeric and my_ans != end and my_ans != "":
+            correctness = "Input Error"
             print("*Responses may only be numbers*")
-            correctness = "Incorrect"
+
         elif my_ans == '':
             correctness = "SKIPPED"
             my_ans = '__'
         elif my_ans == end:
             continue
-        elif (float(my_ans) == ans):
+        elif float(my_ans) == ans:
             correctness = "Correct"
+            num_correct += 1
         elif '.' in str(ans) and isclose(float(my_ans), ans, rel_tol=0.2):
             correctness = "Correct"
+            num_correct += 1
         else:
             correctness = "Incorrect"
-        
+
         if type(ans) == float:
             ans = float(Decimal(ans).quantize(Decimal('0.01'), ROUND_HALF_UP))
-            
+
         list_of_qs.append([f'Q{q_num}: {question} | Answer: {ans} '
                            f'| Your answer: {my_ans} | {correctness}'])
         q_num += 1
+
     if len(list_of_qs) > 0:
         print('\n-----------------\nResults')
         for i in range(len(list_of_qs)):
             print(*list_of_qs[i])
+        print(f'\nQuestions attempted: {len(list_of_qs)}\
+        \nCorrect responses: {num_correct}')
 
 print(Rules)
 math_game()
