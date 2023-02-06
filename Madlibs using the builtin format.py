@@ -1,7 +1,3 @@
-def test(text: str, beginning: str) -> str:
-    return_text = text.startswith(beginning)
-    return return_text
-
 def madlib() -> str:
     """
     We're going to play Madlibs! All you have to do is type in a word that
